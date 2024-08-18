@@ -3,5 +3,8 @@ name = "server"
 version = "0.1.0"
 edition = "2021"
 
+authors = ["Cédric Colin <cedric.colin35@gmail.com>"]
+readme = "README.md"
+
 [dependencies]
 rocket = "0.5.1"
