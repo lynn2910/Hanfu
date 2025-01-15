@@ -2,7 +2,7 @@
 <dataSource name="hanfu@localhost">
   <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.53">
     <root id="1">
-      <DefaultCasing>exact</DefaultCasing>
+      <DefaultCasing>lower/lower</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
       <Grants>|root||lynn|localhost|ALTER|G
 |root||mysql|localhost|ALTER|G
@@ -120,7 +120,7 @@
 |root||root|localhost|UPDATE|G
 |root||mysql|localhost|grant option|G
 |root||root|localhost|grant option|G</Grants>
-      <ServerVersion>10.11.6</ServerVersion>
+      <ServerVersion>11.0.2</ServerVersion>
     </root>
     <collation id="2" parent="1" name="armscii8_bin">
       <Charset>armscii8</Charset>
@@ -1312,34 +1312,34 @@
     <collation id="507" parent="1" name="utf8mb4_vietnamese_ci">
       <Charset>utf8mb4</Charset>
     </collation>
-    <schema id="508" parent="1" name="chamallow">
+    <schema id="508" parent="1" name="24hmans">
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
-    <schema id="509" parent="1" name="ecommerce">
+    <schema id="509" parent="1" name="cheese">
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
-    <schema id="510" parent="1" name="hanfu">
+    <schema id="510" parent="1" name="ecommerce">
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </schema>
+    <schema id="511" parent="1" name="hanfu">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-08-18.15:46:12</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-01-15.14:18:40</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
-    <schema id="511" parent="1" name="hydrobus_belfortain">
+    <schema id="512" parent="1" name="hydro_bus_belfortain">
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
-    <schema id="512" parent="1" name="information_schema">
+    <schema id="513" parent="1" name="information_schema">
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
-    <schema id="513" parent="1" name="iut">
-      <CollationName>utf8mb4_general_ci</CollationName>
-    </schema>
-    <schema id="514" parent="1" name="mashra">
+    <schema id="514" parent="1" name="iut">
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="515" parent="1" name="mio">
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="516" parent="1" name="mysql">
-      <CollationName>utf8mb4_general_ci</CollationName>
+      <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="517" parent="1" name="pedalize">
       <CollationName>utf8mb4_general_ci</CollationName>
@@ -1347,161 +1347,171 @@
     <schema id="518" parent="1" name="performance_schema">
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
-    <schema id="519" parent="1" name="sys">
+    <schema id="519" parent="1" name="sae4">
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </schema>
+    <schema id="520" parent="1" name="sys">
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
-    <user id="520" parent="1" name="lynn">
+    <schema id="521" parent="1" name="tofu">
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </schema>
+    <user id="522" parent="1" name="lynn">
       <Host>localhost</Host>
     </user>
-    <user id="521" parent="1" name="mariadb.sys">
+    <user id="523" parent="1" name="mariadb.sys">
       <Host>localhost</Host>
     </user>
-    <user id="522" parent="1" name="mysql">
+    <user id="524" parent="1" name="mysql">
       <Host>localhost</Host>
     </user>
-    <user id="523" parent="1" name="root">
+    <user id="525" parent="1" name="root">
       <Host>localhost</Host>
     </user>
-    <table id="524" parent="510" name="file_edition">
+    <table id="526" parent="511" name="file_edition">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="525" parent="510" name="files">
+    <table id="527" parent="511" name="files">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="526" parent="510" name="users">
+    <table id="528" parent="511" name="users">
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <column id="527" parent="524" name="modification_id">
+    <column id="529" parent="526" name="modification_id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="528" parent="524" name="author_id">
+    <column id="530" parent="526" name="author_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="529" parent="524" name="file_edited">
+    <column id="531" parent="526" name="file_edited">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="530" parent="524" name="modification_date">
+    <column id="532" parent="526" name="modification_date">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="531" parent="524" name="file_signature">
+    <column id="533" parent="526" name="file_signature">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>char(64)|0s</StoredType>
     </column>
-    <foreign-key id="532" parent="524" name="file_edition_ibfk_1">
+    <foreign-key id="534" parent="526" name="file_edition_ibfk_1">
       <ColNames>author_id</ColNames>
-      <RefColNames>user_id</RefColNames>
+      <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <foreign-key id="533" parent="524" name="file_edition_ibfk_2">
+    <foreign-key id="535" parent="526" name="file_edition_ibfk_2">
       <ColNames>file_edited</ColNames>
       <RefColNames>file_id</RefColNames>
       <RefTableName>files</RefTableName>
     </foreign-key>
-    <index id="534" parent="524" name="PRIMARY">
+    <index id="536" parent="526" name="PRIMARY">
       <ColNames>modification_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="535" parent="524" name="author_id">
+    <index id="537" parent="526" name="author_id">
       <ColNames>author_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="536" parent="524" name="file_edited">
+    <index id="538" parent="526" name="file_edited">
       <ColNames>file_edited</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="537" parent="524" name="PRIMARY">
+    <key id="539" parent="526" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="538" parent="525" name="file_id">
+    <column id="540" parent="527" name="file_id">
       <DefaultExpression>uuid()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="539" parent="525" name="owner_id">
+    <column id="541" parent="527" name="owner_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="540" parent="525" name="creation_date">
+    <column id="542" parent="527" name="creation_date">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="541" parent="525" name="signature">
+    <column id="543" parent="527" name="signature">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>char(64)|0s</StoredType>
     </column>
-    <column id="542" parent="525" name="path">
+    <column id="544" parent="527" name="path">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <foreign-key id="543" parent="525" name="files_ibfk_1">
+    <foreign-key id="545" parent="527" name="files_ibfk_1">
       <ColNames>owner_id</ColNames>
-      <RefColNames>user_id</RefColNames>
+      <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <index id="544" parent="525" name="PRIMARY">
+    <index id="546" parent="527" name="PRIMARY">
       <ColNames>file_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="545" parent="525" name="owner_id">
+    <index id="547" parent="527" name="owner_id">
       <ColNames>owner_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="546" parent="525" name="PRIMARY">
+    <key id="548" parent="527" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="547" parent="526" name="user_id">
+    <column id="549" parent="528" name="id">
       <DefaultExpression>uuid()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="548" parent="526" name="name">
+    <column id="550" parent="528" name="first_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(64)|0s</StoredType>
     </column>
-    <column id="549" parent="526" name="login_token">
-      <NotNull>1</NotNull>
+    <column id="551" parent="528" name="last_name">
       <Position>3</Position>
-      <StoredType>char(64)|0s</StoredType>
+      <StoredType>varchar(64)|0s</StoredType>
     </column>
-    <column id="550" parent="526" name="private_token">
+    <column id="552" parent="528" name="email">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StoredType>char(64)|0s</StoredType>
+      <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <index id="551" parent="526" name="PRIMARY">
-      <ColNames>user_id</ColNames>
+    <column id="553" parent="528" name="password">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>char(97)|0s</StoredType>
+    </column>
+    <index id="554" parent="528" name="PRIMARY">
+      <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="552" parent="526" name="PRIMARY">
+    <key id="555" parent="528" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
