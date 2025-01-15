@@ -1,0 +1,54 @@
+{
+  "db_name": "MySQL",
+  "query": "SELECT * FROM users WHERE login_token = ?;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": {
+          "type": "String",
+          "flags": "NOT_NULL | PRIMARY_KEY | UNSIGNED | BINARY",
+          "max_size": 144
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": {
+          "type": "VarString",
+          "flags": "NOT_NULL | NO_DEFAULT_VALUE",
+          "max_size": 256
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "login_token",
+        "type_info": {
+          "type": "String",
+          "flags": "NOT_NULL | NO_DEFAULT_VALUE",
+          "max_size": 256
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "private_token",
+        "type_info": {
+          "type": "String",
+          "flags": "NOT_NULL | NO_DEFAULT_VALUE",
+          "max_size": 256
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "050b14644f4a35b5637dd5fc1f4d7c191f7e33874ae55338859b8eefe678ec17"
+}
