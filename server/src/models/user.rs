@@ -57,7 +57,7 @@ impl User {
             .map_err(|e| e.into())
     }
 
-    pub(crate) async fn create(data: &User, mut db: Connection<Db>) -> Result<(), anyhow::Error> {
+    pub(crate) async fn create(data: &User, mut db: Connection<Db>) -> Result<User, anyhow::Error> {
         let existing_user = Self::get_by_email(&data.email, &mut **db).await?;
 
         if existing_user.is_some() {
@@ -76,7 +76,12 @@ VALUES (?, ?, ?, ?)
         );
 
         match db.execute(query).await {
-            Ok(_) => Ok(()),
+            Ok(_) => {
+                let query = sqlx::query_as!(User, "SELECT * FROM users WHERE email = ?;", data.email);
+                query.fetch_one(&mut **db)
+                    .await
+                    .map_err(|e| e.into())
+            },
             Err(e) => Err(e.into()),
         }
     }

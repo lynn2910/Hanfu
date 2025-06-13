@@ -124,7 +124,7 @@ async fn signup_route(
     };
 
     // Register user
-    User::create(&user, db).await.map_err(|e| {
+    let user = User::create(&user, db).await.map_err(|e| {
         error!(target: "Signup", "Failed to create user: {}", e.to_string());
         (Status::Unauthorized, create_error_response(ApiResponseCode::HubCannotSignup, "Cannot create an account"))
     })?;
@@ -221,7 +221,7 @@ impl<'r> FromRequest<'r> for Authorization {
 
         match user {
             Some(user_from_db) => {
-                // Check if the token is valid now (expiry)
+                // Check if the token is valid now (expire)
                 let valid_until_calc = creation.add(TimeDelta::hours(validity_duration as i64));
                 if valid_until_calc < Utc::now() {
                     error!("Expired token for user: {}", user_from_db.email);
