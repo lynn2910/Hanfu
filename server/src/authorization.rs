@@ -211,38 +211,29 @@ impl<'r> FromRequest<'r> for Authorization {
             None => return Outcome::Forward(Status::InternalServerError),
         };
 
-        let user = match User::get_by_id(&user_id, &mut **db).await {
-            Ok(user) => user,
+        let user_from_db = match User::get_by_id(&user_id, &mut **db).await {
+            Ok(Some(user)) => user,
+            Ok(None) => {
+                return Outcome::Forward(Status::Unauthorized);
+            }
             Err(e) => {
                 error!("Failed to fetch user from database: {}", e);
                 return Outcome::Forward(Status::InternalServerError);
             }
         };
 
-        match user {
-            Some(user_from_db) => {
-                // Check if the token is valid now (expire)
-                let valid_until_calc = creation.add(TimeDelta::hours(validity_duration as i64));
-                if valid_until_calc < Utc::now() {
-                    error!("Expired token for user: {}", user_from_db.email);
-                    return Outcome::Forward(Status::Unauthorized);
-                }
-
-                // No password verification needed here! The token's validity
-                // and presence of the user in the DB are sufficient proof.
-
-                Outcome::Success(Authorization {
-                    user: user_from_db,
-                    validity_duration,
-                    creation,
-                    valid_until: valid_until_calc,
-                })
-            }
-            None => {
-                error!("User not found for ID from token: {}", user_id); // Log the ID, not email if you only fetched by ID
-                Outcome::Forward(Status::Unauthorized)
-            },
+        let valid_until_calc = creation.add(TimeDelta::hours(validity_duration as i64));
+        if valid_until_calc < Utc::now() {
+            error!("Expired token for user: {}", user_from_db.email);
+            return Outcome::Forward(Status::Unauthorized);
         }
+
+        Outcome::Success(Authorization {
+            user: user_from_db,
+            validity_duration,
+            creation,
+            valid_until: valid_until_calc,
+        })
     }
 }
 
