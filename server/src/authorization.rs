@@ -7,6 +7,7 @@ use argon2::{Argon2, PasswordHasher};
 use chrono::{DateTime, TimeDelta, Utc};
 use hmac::{Hmac, Mac};
 use jwt::{SignWithKey, VerifyWithKey};
+use rocket::http::hyper::body::HttpBody;
 use rocket::http::Status;
 use rocket::log::private::error;
 use rocket::request::{FromRequest, Outcome};
@@ -78,6 +79,12 @@ async fn login_route(
     }
 }
 
+// ==================================
+//
+//      SIGNUP
+//
+// ==================================
+
 #[derive(Deserialize, Debug)]
 pub(crate) struct Signup {
     pub first_name: String,
@@ -111,7 +118,7 @@ async fn signup_route(
         first_name: signup.first_name.clone(),
         last_name: signup.last_name.clone(),
 
-        password: hashed_password,
+        password: hashed_password.clone(),
         email: signup.email.clone(),
     };
 
@@ -121,7 +128,12 @@ async fn signup_route(
         (Status::Unauthorized, e.to_string())
     })?;
 
-    todo!()
+    let token = generate_token(&user, &hashed_password, config.auth.secret_key.as_str());
+
+    match token {
+        Some(token) => Ok(Json(SignupOkResult { token })),
+        None => Err((Status::Unauthorized, String::new())),
+    }
 }
 
 #[derive(Debug)]
@@ -179,7 +191,7 @@ impl<'r> FromRequest<'r> for Authorization {
                 .cloned()
                 .unwrap_or("UNKNOWN".into()),
         )
-        .unwrap_or(0);
+            .unwrap_or(0);
         let creation =
             DateTime::<Utc>::from_str(&claims.get("creation").cloned().unwrap_or("UNKNOWN".into()))
                 .unwrap_or(Utc::now());
@@ -196,7 +208,7 @@ impl<'r> FromRequest<'r> for Authorization {
             },
             db,
         )
-        .await;
+            .await;
 
         match user {
             Some(user) => {

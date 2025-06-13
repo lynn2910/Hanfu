@@ -8,8 +8,11 @@ use crate::config::AppConfig;
 use clap::Parser;
 use dotenv::dotenv;
 use rocket::fairing::AdHoc;
-use rocket::{error, fairing, get, routes, Build, Rocket};
+use rocket::serde::json::Json;
+use rocket::{catch, catchers, error, fairing, get, routes, Build, Request, Rocket};
 use rocket_db_pools::Database;
+use serde::Serialize;
+use serde_repr::Serialize_repr;
 use std::env;
 use std::path::PathBuf;
 
@@ -70,7 +73,8 @@ async fn main() -> Result<(), anyhow::Error> {
         .manage(app_config)
         .attach(Db::init())
         .attach(migrations_fairing)
-        .mount("/", routes![test])
+        .mount("/", routes![hello, test])
+        .register("/", catchers![unauthorized, internal_error, not_found])
         .mount("/hub", authorization::get_routes());
 
     api.launch().await.expect("API launch failed");
@@ -78,7 +82,44 @@ async fn main() -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+#[derive(Serialize_repr, Debug, PartialEq)]
+#[repr(u32)]
+pub enum ApiResponseCode {
+    Unauthorized = 1001,
+    InternalError = 1002,
+    NotFound = 1003,
+}
+
+fn create_error_response(code: ApiResponseCode, message: impl ToString) -> Json<ApiResponse> {
+    ApiResponse { code, message: message.to_string() }.into()
+}
+
+#[derive(Serialize, Debug)]
+pub struct ApiResponse {
+    code: ApiResponseCode,
+    message: String,
+}
+
+#[catch(401)]
+fn unauthorized() -> Json<ApiResponse> {
+    create_error_response(ApiResponseCode::Unauthorized, "Access denied".to_string())
+}
+
+#[catch(500)]
+fn internal_error() -> Json<ApiResponse> {
+    create_error_response(ApiResponseCode::InternalError, "Internal server error".to_string())
+}
+
+#[catch(404)]
+fn not_found(req: &Request) -> Json<ApiResponse> {
+    create_error_response(ApiResponseCode::NotFound, format!("Not found: {}", req.uri()))
+}
 #[get("/")]
+fn hello() -> &'static str {
+    "hello world!"
+}
+
+#[get("/secured")]
 fn test(auth: Authorization) -> String {
     format!("Hello user '{id}'", id = auth.user.first_name)
 }
