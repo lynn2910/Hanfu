@@ -2,124 +2,7 @@
 <dataSource name="hanfu@localhost">
   <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.53">
     <root id="1">
-      <DefaultCasing>lower/lower</DefaultCasing>
       <DefaultEngine>InnoDB</DefaultEngine>
-      <Grants>|root||lynn|localhost|ALTER|G
-|root||mysql|localhost|ALTER|G
-|root||root|localhost|ALTER|G
-|root||lynn|localhost|ALTER ROUTINE|G
-|root||mysql|localhost|ALTER ROUTINE|G
-|root||root|localhost|ALTER ROUTINE|G
-|root||lynn|localhost|BINLOG ADMIN|G
-|root||mysql|localhost|BINLOG ADMIN|G
-|root||root|localhost|BINLOG ADMIN|G
-|root||lynn|localhost|BINLOG MONITOR|G
-|root||mysql|localhost|BINLOG MONITOR|G
-|root||root|localhost|BINLOG MONITOR|G
-|root||lynn|localhost|BINLOG REPLAY|G
-|root||mysql|localhost|BINLOG REPLAY|G
-|root||root|localhost|BINLOG REPLAY|G
-|root||lynn|localhost|CONNECTION ADMIN|G
-|root||mysql|localhost|CONNECTION ADMIN|G
-|root||root|localhost|CONNECTION ADMIN|G
-|root||lynn|localhost|CREATE|G
-|root||mysql|localhost|CREATE|G
-|root||root|localhost|CREATE|G
-|root||lynn|localhost|CREATE ROUTINE|G
-|root||mysql|localhost|CREATE ROUTINE|G
-|root||root|localhost|CREATE ROUTINE|G
-|root||lynn|localhost|CREATE TABLESPACE|G
-|root||mysql|localhost|CREATE TABLESPACE|G
-|root||root|localhost|CREATE TABLESPACE|G
-|root||lynn|localhost|CREATE TEMPORARY TABLES|G
-|root||mysql|localhost|CREATE TEMPORARY TABLES|G
-|root||root|localhost|CREATE TEMPORARY TABLES|G
-|root||lynn|localhost|CREATE USER|G
-|root||mysql|localhost|CREATE USER|G
-|root||root|localhost|CREATE USER|G
-|root||lynn|localhost|CREATE VIEW|G
-|root||mysql|localhost|CREATE VIEW|G
-|root||root|localhost|CREATE VIEW|G
-|root||lynn|localhost|DELETE|G
-|root||mysql|localhost|DELETE|G
-|root||root|localhost|DELETE|G
-|root||lynn|localhost|DELETE HISTORY|G
-|root||mysql|localhost|DELETE HISTORY|G
-|root||root|localhost|DELETE HISTORY|G
-|root||lynn|localhost|DROP|G
-|root||mysql|localhost|DROP|G
-|root||root|localhost|DROP|G
-|root||lynn|localhost|EVENT|G
-|root||mysql|localhost|EVENT|G
-|root||root|localhost|EVENT|G
-|root||lynn|localhost|EXECUTE|G
-|root||mysql|localhost|EXECUTE|G
-|root||root|localhost|EXECUTE|G
-|root||lynn|localhost|FEDERATED ADMIN|G
-|root||mysql|localhost|FEDERATED ADMIN|G
-|root||root|localhost|FEDERATED ADMIN|G
-|root||lynn|localhost|FILE|G
-|root||mysql|localhost|FILE|G
-|root||root|localhost|FILE|G
-|root||lynn|localhost|INDEX|G
-|root||mysql|localhost|INDEX|G
-|root||root|localhost|INDEX|G
-|root||lynn|localhost|INSERT|G
-|root||mysql|localhost|INSERT|G
-|root||root|localhost|INSERT|G
-|root||lynn|localhost|LOCK TABLES|G
-|root||mysql|localhost|LOCK TABLES|G
-|root||root|localhost|LOCK TABLES|G
-|root||lynn|localhost|PROCESS|G
-|root||mysql|localhost|PROCESS|G
-|root||root|localhost|PROCESS|G
-|root||lynn|localhost|READ_ONLY ADMIN|G
-|root||mysql|localhost|READ_ONLY ADMIN|G
-|root||root|localhost|READ_ONLY ADMIN|G
-|root||lynn|localhost|REFERENCES|G
-|root||mysql|localhost|REFERENCES|G
-|root||root|localhost|REFERENCES|G
-|root||lynn|localhost|RELOAD|G
-|root||mysql|localhost|RELOAD|G
-|root||root|localhost|RELOAD|G
-|root||lynn|localhost|REPLICATION MASTER ADMIN|G
-|root||mysql|localhost|REPLICATION MASTER ADMIN|G
-|root||root|localhost|REPLICATION MASTER ADMIN|G
-|root||lynn|localhost|REPLICATION SLAVE|G
-|root||mysql|localhost|REPLICATION SLAVE|G
-|root||root|localhost|REPLICATION SLAVE|G
-|root||lynn|localhost|REPLICATION SLAVE ADMIN|G
-|root||mysql|localhost|REPLICATION SLAVE ADMIN|G
-|root||root|localhost|REPLICATION SLAVE ADMIN|G
-|root||lynn|localhost|SELECT|G
-|root||mysql|localhost|SELECT|G
-|root||root|localhost|SELECT|G
-|root||lynn|localhost|SET USER|G
-|root||mysql|localhost|SET USER|G
-|root||root|localhost|SET USER|G
-|root||lynn|localhost|SHOW DATABASES|G
-|root||mysql|localhost|SHOW DATABASES|G
-|root||root|localhost|SHOW DATABASES|G
-|root||lynn|localhost|SHOW VIEW|G
-|root||mysql|localhost|SHOW VIEW|G
-|root||root|localhost|SHOW VIEW|G
-|root||lynn|localhost|SHUTDOWN|G
-|root||mysql|localhost|SHUTDOWN|G
-|root||root|localhost|SHUTDOWN|G
-|root||lynn|localhost|SLAVE MONITOR|G
-|root||mysql|localhost|SLAVE MONITOR|G
-|root||root|localhost|SLAVE MONITOR|G
-|root||lynn|localhost|SUPER|G
-|root||mysql|localhost|SUPER|G
-|root||root|localhost|SUPER|G
-|root||lynn|localhost|TRIGGER|G
-|root||mysql|localhost|TRIGGER|G
-|root||root|localhost|TRIGGER|G
-|root||lynn|localhost|UPDATE|G
-|root||mysql|localhost|UPDATE|G
-|root||root|localhost|UPDATE|G
-|root||mysql|localhost|grant option|G
-|root||root|localhost|grant option|G</Grants>
       <ServerVersion>11.0.2</ServerVersion>
     </root>
     <collation id="2" parent="1" name="armscii8_bin">
@@ -1322,8 +1205,10 @@
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="511" parent="1" name="hanfu">
+      <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2025-01-15.14:18:40</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLevel>3</LastIntrospectionLevel>
+      <LastIntrospectionLocalTimestamp>2025-06-13.18:34:47</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="512" parent="1" name="hydro_bus_belfortain">
@@ -1368,112 +1253,115 @@
     <user id="525" parent="1" name="root">
       <Host>localhost</Host>
     </user>
-    <table id="526" parent="511" name="file_edition">
+    <table id="526" parent="511" name="_sqlx_migrations">
+      <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="527" parent="511" name="files">
+    <table id="527" parent="511" name="file_edition">
+      <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="528" parent="511" name="users">
+    <table id="528" parent="511" name="files">
+      <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <column id="529" parent="526" name="modification_id">
+    <table id="529" parent="511" name="users">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </table>
+    <column id="530" parent="526" name="version">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="531" parent="526" name="description">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>text|0s</StoredType>
+    </column>
+    <column id="532" parent="526" name="installed_on">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>timestamp|0s</StoredType>
+    </column>
+    <column id="533" parent="526" name="success">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>tinyint(1)|0s</StoredType>
+    </column>
+    <column id="534" parent="526" name="checksum">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>blob|0s</StoredType>
+    </column>
+    <column id="535" parent="526" name="execution_time">
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <index id="536" parent="526" name="PRIMARY">
+      <ColNames>version</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="537" parent="526" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="538" parent="527" name="modification_id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="530" parent="526" name="author_id">
+    <column id="539" parent="527" name="author_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="531" parent="526" name="file_edited">
+    <column id="540" parent="527" name="file_edited">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="532" parent="526" name="modification_date">
+    <column id="541" parent="527" name="modification_date">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="533" parent="526" name="file_signature">
+    <column id="542" parent="527" name="file_signature">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>char(64)|0s</StoredType>
     </column>
-    <foreign-key id="534" parent="526" name="file_edition_ibfk_1">
+    <foreign-key id="543" parent="527" name="file_edition_ibfk_1">
       <ColNames>author_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <foreign-key id="535" parent="526" name="file_edition_ibfk_2">
+    <foreign-key id="544" parent="527" name="file_edition_ibfk_2">
       <ColNames>file_edited</ColNames>
       <RefColNames>file_id</RefColNames>
       <RefTableName>files</RefTableName>
     </foreign-key>
-    <index id="536" parent="526" name="PRIMARY">
+    <index id="545" parent="527" name="PRIMARY">
       <ColNames>modification_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="537" parent="526" name="author_id">
+    <index id="546" parent="527" name="author_id">
       <ColNames>author_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="538" parent="526" name="file_edited">
+    <index id="547" parent="527" name="file_edited">
       <ColNames>file_edited</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="539" parent="526" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="540" parent="527" name="file_id">
-      <DefaultExpression>uuid()</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>uuid|0s</StoredType>
-    </column>
-    <column id="541" parent="527" name="owner_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>uuid|0s</StoredType>
-    </column>
-    <column id="542" parent="527" name="creation_date">
-      <DefaultExpression>current_timestamp()</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <column id="543" parent="527" name="signature">
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StoredType>char(64)|0s</StoredType>
-    </column>
-    <column id="544" parent="527" name="path">
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>text|0s</StoredType>
-    </column>
-    <foreign-key id="545" parent="527" name="files_ibfk_1">
-      <ColNames>owner_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>users</RefTableName>
-    </foreign-key>
-    <index id="546" parent="527" name="PRIMARY">
-      <ColNames>file_id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="547" parent="527" name="owner_id">
-      <ColNames>owner_id</ColNames>
       <Type>btree</Type>
     </index>
     <key id="548" parent="527" name="PRIMARY">
@@ -1481,37 +1369,83 @@
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="549" parent="528" name="id">
+    <column id="549" parent="528" name="file_id">
       <DefaultExpression>uuid()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="550" parent="528" name="first_name">
+    <column id="550" parent="528" name="owner_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>uuid|0s</StoredType>
+    </column>
+    <column id="551" parent="528" name="creation_date">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="552" parent="528" name="signature">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>char(64)|0s</StoredType>
+    </column>
+    <column id="553" parent="528" name="path">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>text|0s</StoredType>
+    </column>
+    <foreign-key id="554" parent="528" name="files_ibfk_1">
+      <ColNames>owner_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <index id="555" parent="528" name="PRIMARY">
+      <ColNames>file_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="556" parent="528" name="owner_id">
+      <ColNames>owner_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="557" parent="528" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="558" parent="529" name="id">
+      <DefaultExpression>uuid()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>uuid|0s</StoredType>
+    </column>
+    <column id="559" parent="529" name="first_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(64)|0s</StoredType>
     </column>
-    <column id="551" parent="528" name="last_name">
+    <column id="560" parent="529" name="last_name">
       <Position>3</Position>
       <StoredType>varchar(64)|0s</StoredType>
     </column>
-    <column id="552" parent="528" name="email">
+    <column id="561" parent="529" name="email">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="553" parent="528" name="password">
+    <column id="562" parent="529" name="password">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>char(97)|0s</StoredType>
     </column>
-    <index id="554" parent="528" name="PRIMARY">
+    <index id="563" parent="529" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="555" parent="528" name="PRIMARY">
+    <key id="564" parent="529" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

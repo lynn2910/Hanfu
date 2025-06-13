@@ -88,6 +88,8 @@ pub enum ApiResponseCode {
     Unauthorized = 1001,
     InternalError = 1002,
     NotFound = 1003,
+
+    HubCannotSignup = 2001,
 }
 
 fn create_error_response(code: ApiResponseCode, message: impl ToString) -> Json<ApiResponse> {

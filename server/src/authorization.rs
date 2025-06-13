@@ -1,9 +1,9 @@
 use crate::config::AppConfig;
 use crate::models::user::User;
-use crate::Db;
+use crate::{create_error_response, ApiResponse, ApiResponseCode, Db};
 use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::SaltString;
-use argon2::{Argon2, PasswordHasher};
+use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier};
 use chrono::{DateTime, TimeDelta, Utc};
 use hmac::{Hmac, Mac};
 use jwt::{SignWithKey, VerifyWithKey};
@@ -26,8 +26,8 @@ pub(crate) fn generate_password_hash(password: &[u8]) -> anyhow::Result<String> 
     Ok(argon2.hash_password(password, &salt)?.to_string())
 }
 
-fn generate_token(user: &User, password: &str, secret_key: &str) -> Option<String> {
-    let key: Hmac<Sha256> = Hmac::new_from_slice(secret_key.as_bytes()).unwrap();
+fn generate_token(user: &User, password: &str, secret_key: impl ToString) -> Option<String> {
+    let key: Hmac<Sha256> = Hmac::new_from_slice(secret_key.to_string().as_bytes()).unwrap();
     let mut claims = std::collections::BTreeMap::new();
     claims.insert("creation", Utc::now().to_string());
     // Validity: 12h
@@ -37,7 +37,8 @@ fn generate_token(user: &User, password: &str, secret_key: &str) -> Option<Strin
     );
     claims.insert("validity_duration", "12".to_string());
     claims.insert("email", user.email.clone());
-    claims.insert("password", password.to_string());
+    // claims.insert("password", password.to_string());
+    claims.insert("user_id", user.id.clone());
 
     match claims.sign_with_key(&key) {
         Ok(token) => Some(token),
@@ -51,7 +52,7 @@ fn generate_token(user: &User, password: &str, secret_key: &str) -> Option<Strin
 #[derive(Deserialize, Debug)]
 pub(crate) struct Login {
     pub email: String,
-    pub hashed_password: String,
+    pub password: String,
 }
 
 #[derive(Serialize, Debug)]
@@ -67,7 +68,7 @@ async fn login_route(
 ) -> Result<Json<LoginOkResult>, Status> {
     match User::login(&login.0, db).await {
         Some(user) => {
-            let token = generate_token(&user, &login.hashed_password, &config.auth.secret_key);
+            let token = generate_token(&user, &config.auth.secret_key, &config.auth.secret_key);
             if token.is_none() {
                 return Err(Status::InternalServerError);
             }
@@ -90,7 +91,7 @@ pub(crate) struct Signup {
     pub first_name: String,
     pub last_name: Option<String>,
 
-    pub hashed_password: String,
+    pub password: String,
     pub email: String,
 }
 
@@ -99,18 +100,18 @@ struct SignupOkResult {
     token: String,
 }
 
+
 #[post("/signup", format = "application/json", data = "<signup>")]
 async fn signup_route(
     signup: Json<Signup>,
     db: Connection<Db>,
     config: &State<AppConfig>,
-) -> Result<Json<SignupOkResult>, (Status, String)> {
+) -> Result<Json<SignupOkResult>, (Status, Json<ApiResponse>)> {
     // We'll hash the password first
-    // The frontend already hashed it using SHA512, as a first security measure
     let hashed_password =
-        generate_password_hash(signup.hashed_password.as_bytes()).map_err(|e| {
+        generate_password_hash(signup.password.as_bytes()).map_err(|e| { // Use signup.password
             error!(target: "Signup", "Failed to generate password hash: {}", e.to_string());
-            (Status::InternalServerError, "An error occurred".to_string())
+            (Status::InternalServerError, create_error_response(ApiResponseCode::InternalError, "An internal error occurred"))
         })?;
 
     let user = User {
@@ -125,14 +126,14 @@ async fn signup_route(
     // Register user
     User::create(&user, db).await.map_err(|e| {
         error!(target: "Signup", "Failed to create user: {}", e.to_string());
-        (Status::Unauthorized, e.to_string())
+        (Status::Unauthorized, create_error_response(ApiResponseCode::HubCannotSignup, "Cannot create an account"))
     })?;
 
-    let token = generate_token(&user, &hashed_password, config.auth.secret_key.as_str());
+    let token = generate_token(&user, config.auth.secret_key.as_str(), config.auth.secret_key.as_str());
 
     match token {
         Some(token) => Ok(Json(SignupOkResult { token })),
-        None => Err((Status::Unauthorized, String::new())),
+        None => Err((Status::Unauthorized, create_error_response(ApiResponseCode::InternalError, "An internal error occurred"))),
     }
 }
 
@@ -172,18 +173,22 @@ impl<'r> FromRequest<'r> for Authorization {
 
         let key: Hmac<Sha256> = match Hmac::new_from_slice(config.auth.secret_key.as_bytes()) {
             Ok(key) => key,
-            Err(_) => panic!("Invalid key"),
+            Err(e) => {
+                error!("Invalid secret key for HMAC: {}", e);
+                return Outcome::Forward(Status::InternalServerError);
+            }
         };
 
         let claims: std::collections::BTreeMap<String, String> = match token.verify_with_key(&key) {
             Ok(claims) => claims,
-            Err(_) => {
+            Err(e) => {
+                error!("Failed to verify token or decode claims: {}", e);
                 return Outcome::Forward(Status::Unauthorized);
             }
         };
 
-        let email = claims.get("email").cloned().unwrap_or("UNKNOWN".into());
-        let hashed_password = claims.get("password").cloned().unwrap_or("UNKNOWN".into());
+        let user_id = claims.get("user_id").cloned().unwrap_or("UNKNOWN".into());
+        // let email = claims.get("email").cloned().unwrap_or("UNKNOWN".into());
 
         let validity_duration = u32::from_str(
             &claims
@@ -192,39 +197,51 @@ impl<'r> FromRequest<'r> for Authorization {
                 .unwrap_or("UNKNOWN".into()),
         )
             .unwrap_or(0);
+        let creation_str = claims.get("creation").cloned().unwrap_or("UNKNOWN".into());
         let creation =
-            DateTime::<Utc>::from_str(&claims.get("creation").cloned().unwrap_or("UNKNOWN".into()))
-                .unwrap_or(Utc::now());
+            DateTime::<Utc>::from_str(&creation_str)
+                .unwrap_or_else(|e| {
+                    error!("Failed to parse creation timestamp from token: {}", e);
+                    Utc::now()
+                });
 
-        let db = match req.guard::<Connection<Db>>().await.succeeded() {
+
+        let mut db = match req.guard::<Connection<Db>>().await.succeeded() {
             Some(db) => db,
             None => return Outcome::Forward(Status::InternalServerError),
         };
 
-        let user = User::login(
-            &Login {
-                email,
-                hashed_password,
-            },
-            db,
-        )
-            .await;
+        let user = match User::get_by_id(&user_id, &mut **db).await {
+            Ok(user) => user,
+            Err(e) => {
+                error!("Failed to fetch user from database: {}", e);
+                return Outcome::Forward(Status::InternalServerError);
+            }
+        };
 
         match user {
-            Some(user) => {
-                // Check if the token is valid now
-                if creation.add(TimeDelta::hours(validity_duration as i64)) < Utc::now() {
+            Some(user_from_db) => {
+                // Check if the token is valid now (expiry)
+                let valid_until_calc = creation.add(TimeDelta::hours(validity_duration as i64));
+                if valid_until_calc < Utc::now() {
+                    error!("Expired token for user: {}", user_from_db.email);
                     return Outcome::Forward(Status::Unauthorized);
                 }
 
+                // No password verification needed here! The token's validity
+                // and presence of the user in the DB are sufficient proof.
+
                 Outcome::Success(Authorization {
-                    user,
+                    user: user_from_db,
                     validity_duration,
-                    creation: Utc::now(),
-                    valid_until: Utc::now(),
+                    creation,
+                    valid_until: valid_until_calc,
                 })
             }
-            None => Outcome::Forward(Status::Unauthorized),
+            None => {
+                error!("User not found for ID from token: {}", user_id); // Log the ID, not email if you only fetched by ID
+                Outcome::Forward(Status::Unauthorized)
+            },
         }
     }
 }

@@ -4,7 +4,7 @@ use anyhow::bail;
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use rocket_db_pools::sqlx::Executor;
 use rocket_db_pools::Connection;
-use sqlx::{FromRow, Row};
+use sqlx::{FromRow, MySqlConnection, Row};
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct User {
@@ -35,7 +35,7 @@ impl User {
                 }
 
                 Argon2::default()
-                    .verify_password(data.hashed_password.as_bytes(), &parsed_hash.unwrap())
+                    .verify_password(data.password.as_bytes(), &parsed_hash.unwrap())
                     .ok()
                     .map(|_| user)
             }
@@ -43,16 +43,26 @@ impl User {
         }
     }
 
-    pub(crate) async fn create(data: &User, mut db: Connection<Db>) -> Result<(), anyhow::Error> {
-        let check_user_presence = sqlx::query!("SELECT id FROM users WHERE email = ?;", data.email);
+    pub(crate) async fn get_by_email(email: &str, conn: &mut MySqlConnection) -> anyhow::Result<Option<User>> {
+        sqlx::query_as!(User, "SELECT * FROM users WHERE email = ?;", email)
+            .fetch_optional(conn)
+            .await
+            .map_err(|e| e.into())
+    }
 
-        let r = db.fetch_one(check_user_presence).await?;
-        if !r.is_empty() {
-            // Well, the email is already used
+    pub(crate) async fn get_by_id(id: &str, conn: &mut MySqlConnection) -> anyhow::Result<Option<User>> {
+        sqlx::query_as!(User, "SELECT * FROM users WHERE id = ?;", id)
+            .fetch_optional(conn)
+            .await
+            .map_err(|e| e.into())
+    }
+
+    pub(crate) async fn create(data: &User, mut db: Connection<Db>) -> Result<(), anyhow::Error> {
+        let existing_user = Self::get_by_email(&data.email, &mut **db).await?;
+
+        if existing_user.is_some() {
             bail!("User already exists");
         }
-
-        // We can now create the user
 
         let query = sqlx::query!(
             r#"
