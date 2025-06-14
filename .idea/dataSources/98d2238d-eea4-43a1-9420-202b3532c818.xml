@@ -1208,7 +1208,7 @@
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2025-06-13.18:34:47</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-06-14.13:48:58</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="512" parent="1" name="hydro_bus_belfortain">
@@ -1268,184 +1268,290 @@
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="529" parent="511" name="users">
+    <table id="529" parent="511" name="upload_sessions">
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <column id="530" parent="526" name="version">
+    <table id="530" parent="511" name="users">
+      <DetailsLevel>3</DetailsLevel>
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </table>
+    <column id="531" parent="526" name="version">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint(20)|0s</StoredType>
     </column>
-    <column id="531" parent="526" name="description">
+    <column id="532" parent="526" name="description">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="532" parent="526" name="installed_on">
+    <column id="533" parent="526" name="installed_on">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>timestamp|0s</StoredType>
     </column>
-    <column id="533" parent="526" name="success">
+    <column id="534" parent="526" name="success">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="534" parent="526" name="checksum">
+    <column id="535" parent="526" name="checksum">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>blob|0s</StoredType>
     </column>
-    <column id="535" parent="526" name="execution_time">
+    <column id="536" parent="526" name="execution_time">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>bigint(20)|0s</StoredType>
     </column>
-    <index id="536" parent="526" name="PRIMARY">
+    <index id="537" parent="526" name="PRIMARY">
       <ColNames>version</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="537" parent="526" name="PRIMARY">
+    <key id="538" parent="526" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="538" parent="527" name="modification_id">
+    <column id="539" parent="527" name="modification_id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="539" parent="527" name="author_id">
+    <column id="540" parent="527" name="author_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="540" parent="527" name="file_edited">
+    <column id="541" parent="527" name="file_edited">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="541" parent="527" name="modification_date">
+    <column id="542" parent="527" name="modification_date">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="542" parent="527" name="file_signature">
+    <column id="543" parent="527" name="file_signature">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>char(64)|0s</StoredType>
     </column>
-    <foreign-key id="543" parent="527" name="file_edition_ibfk_1">
+    <foreign-key id="544" parent="527" name="file_edition_ibfk_1">
       <ColNames>author_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <foreign-key id="544" parent="527" name="file_edition_ibfk_2">
+    <foreign-key id="545" parent="527" name="file_edition_ibfk_2">
       <ColNames>file_edited</ColNames>
       <RefColNames>file_id</RefColNames>
       <RefTableName>files</RefTableName>
     </foreign-key>
-    <index id="545" parent="527" name="PRIMARY">
+    <index id="546" parent="527" name="PRIMARY">
       <ColNames>modification_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="546" parent="527" name="author_id">
+    <index id="547" parent="527" name="author_id">
       <ColNames>author_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="547" parent="527" name="file_edited">
+    <index id="548" parent="527" name="file_edited">
       <ColNames>file_edited</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="548" parent="527" name="PRIMARY">
+    <key id="549" parent="527" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="549" parent="528" name="file_id">
+    <column id="550" parent="528" name="file_id">
       <DefaultExpression>uuid()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="550" parent="528" name="owner_id">
+    <column id="551" parent="528" name="owner_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="551" parent="528" name="creation_date">
+    <column id="552" parent="528" name="creation_date">
       <DefaultExpression>current_timestamp()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="552" parent="528" name="signature">
+    <column id="553" parent="528" name="signature">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>char(64)|0s</StoredType>
     </column>
-    <column id="553" parent="528" name="path">
+    <column id="554" parent="528" name="path">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <foreign-key id="554" parent="528" name="files_ibfk_1">
+    <column id="555" parent="528" name="upload_finished">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>tinyint(1)|0s</StoredType>
+    </column>
+    <column id="556" parent="528" name="upload_finished_at">
+      <Position>7</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <foreign-key id="557" parent="528" name="files_ibfk_1">
       <ColNames>owner_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <index id="555" parent="528" name="PRIMARY">
+    <index id="558" parent="528" name="PRIMARY">
       <ColNames>file_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="556" parent="528" name="owner_id">
+    <index id="559" parent="528" name="owner_id">
       <ColNames>owner_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="557" parent="528" name="PRIMARY">
+    <key id="560" parent="528" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="558" parent="529" name="id">
+    <column id="561" parent="529" name="id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>varchar(36)|0s</StoredType>
+    </column>
+    <column id="562" parent="529" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>uuid|0s</StoredType>
+    </column>
+    <column id="563" parent="529" name="file_name">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>varchar(255)|0s</StoredType>
+    </column>
+    <column id="564" parent="529" name="total_size">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="565" parent="529" name="iv">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>varchar(32)|0s</StoredType>
+    </column>
+    <column id="566" parent="529" name="uploaded_bytes">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>bigint(20)|0s</StoredType>
+    </column>
+    <column id="567" parent="529" name="status">
+      <DefaultExpression>&apos;pending&apos;</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StoredType>enum(&apos;pending&apos;, &apos;completed&apos;, &apos;failed&apos;, &apos;cancelled&apos;)|0e</StoredType>
+    </column>
+    <column id="568" parent="529" name="file_id">
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StoredType>uuid|0s</StoredType>
+    </column>
+    <column id="569" parent="529" name="created_at">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="570" parent="529" name="updated_at">
+      <DefaultExpression>current_timestamp()</DefaultExpression>
+      <NotNull>1</NotNull>
+      <OnUpdate>current_timestamp()</OnUpdate>
+      <Position>10</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="571" parent="529" name="expires_at">
+      <Position>11</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <foreign-key id="572" parent="529" name="upload_sessions_ibfk_1">
+      <ColNames>user_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <foreign-key id="573" parent="529" name="upload_sessions_ibfk_2">
+      <ColNames>file_id</ColNames>
+      <RefColNames>file_id</RefColNames>
+      <RefTableName>files</RefTableName>
+    </foreign-key>
+    <index id="574" parent="529" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="575" parent="529" name="idx_upload_sessions_user_id">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="576" parent="529" name="idx_upload_sessions_status">
+      <ColNames>status</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="577" parent="529" name="file_id">
+      <ColNames>file_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="578" parent="529" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="579" parent="530" name="id">
       <DefaultExpression>uuid()</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>uuid|0s</StoredType>
     </column>
-    <column id="559" parent="529" name="first_name">
+    <column id="580" parent="530" name="first_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(64)|0s</StoredType>
     </column>
-    <column id="560" parent="529" name="last_name">
+    <column id="581" parent="530" name="last_name">
       <Position>3</Position>
       <StoredType>varchar(64)|0s</StoredType>
     </column>
-    <column id="561" parent="529" name="email">
+    <column id="582" parent="530" name="email">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="562" parent="529" name="password">
+    <column id="583" parent="530" name="password">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>char(97)|0s</StoredType>
     </column>
-    <index id="563" parent="529" name="PRIMARY">
+    <index id="584" parent="530" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="564" parent="529" name="PRIMARY">
+    <key id="585" parent="530" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

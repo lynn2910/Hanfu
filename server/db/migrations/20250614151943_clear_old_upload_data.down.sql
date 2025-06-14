@@ -1,0 +1,1 @@
+DROP PROCEDURE clear_old_upload_data;
