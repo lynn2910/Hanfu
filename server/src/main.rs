@@ -1,10 +1,14 @@
-mod authorization;
 mod config;
 mod errors;
 mod models;
+mod routers;
+mod scheduler;
 
-use crate::authorization::Authorization;
 use crate::config::AppConfig;
+use crate::models::upload_sessions::clear_old_upload_data;
+use crate::routers::authorization::Authorization;
+use crate::routers::{authorization, upload};
+use crate::scheduler::create_jobs;
 use clap::Parser;
 use dotenv::dotenv;
 use rocket::fairing::AdHoc;
@@ -54,6 +58,11 @@ async fn main() -> Result<(), anyhow::Error> {
     )
     .expect("Cannot parse the config from config.toml");
 
+    if let Err(e) = create_jobs(app_config.clone()).await {
+        error!("Failed to create jobs scheduler: {}", e);
+        std::process::exit(1);
+    }
+
     let migrations_fairing = AdHoc::try_on_ignite("SQLx Migrations", run_migrations);
 
     // Create DB config for Rocket
@@ -75,7 +84,8 @@ async fn main() -> Result<(), anyhow::Error> {
         .attach(migrations_fairing)
         .mount("/", routes![hello, test])
         .register("/", catchers![unauthorized, internal_error, not_found])
-        .mount("/hub", authorization::get_routes());
+        .mount("/hub", authorization::get_routes())
+        .mount("/upload", upload::get_routes());
 
     api.launch().await.expect("API launch failed");
 
@@ -90,6 +100,8 @@ pub enum ApiResponseCode {
     NotFound = 1003,
 
     HubCannotSignup = 2001,
+    UploadInvalidIVFormat = 3001,
+    UploadInvalidIVLength = 3002,
 }
 
 fn create_error_response(code: ApiResponseCode, message: impl ToString) -> Json<ApiResponse> {
