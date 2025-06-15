@@ -1,8 +1,11 @@
 use crate::config::AppConfig;
+use crate::models::user::User;
 use chrono::{NaiveDateTime, Utc};
+use rocket::log::private::warn;
 use serde::{Deserialize, Serialize};
 use sha2::Digest;
 use sqlx::{FromRow, MySqlConnection};
+use std::path::Path;
 use tokio::fs;
 
 #[derive(Debug, FromRow, Clone, Serialize, Deserialize)]
@@ -54,6 +57,8 @@ WHERE file_id = ?"#,
             .map_err(|e| anyhow::anyhow!(e))
     }
 
+    pub async fn get_from_path(conn: &mut MySqlConnection, path: &str, user_id: String) -> anyhow::Result<Self> {}
+
     pub async fn finish_upload(
         &self,
         conn: &mut MySqlConnection,
@@ -90,4 +95,41 @@ WHERE file_id = ?"#,
 
         Ok(())
     }
+}
+
+pub fn is_path_valid(path: &str, user: &User) -> bool {
+    let path = Path::new(path);
+    let mut components = vec![];
+    for component in path.components() {
+        match component {
+            std::path::Component::ParentDir => {
+                warn!(
+                    "Someone is testing the system with a path containing '..': {} {} ({}): {}",
+                    user.first_name, user.last_name,
+                    user.id,
+                    user.email
+                );
+                if components.pop().is_none() {
+                    return false;
+                }
+            },
+            std::path::Component::CurDir => {},
+            std::path::Component::Normal(os_str) => {
+                if os_str.is_empty() {
+                    return false;
+                }
+                components.push(os_str);
+            },
+            _ => {
+                return false;
+            }
+        }
+    }
+    true
+}
+
+pub fn get_mime_type(path: &str) -> Option<String> {
+    mime_guess::from_path(path)
+        .first()
+        .map(|m| m.to_string())
 }

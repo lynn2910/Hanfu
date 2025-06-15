@@ -8,7 +8,7 @@ mod services;
 use crate::config::AppConfig;
 use crate::models::upload_sessions::clear_old_upload_data;
 use crate::routers::authorization::Authorization;
-use crate::routers::{authorization, upload};
+use crate::routers::{authorization, files, upload};
 use crate::scheduler::create_jobs;
 use clap::Parser;
 use dotenv::dotenv;
@@ -89,7 +89,8 @@ async fn main() -> Result<(), anyhow::Error> {
         .mount("/", routes![hello, test])
         .register("/", catchers![unauthorized, internal_error, not_found])
         .mount("/hub", authorization::get_routes())
-        .mount("/upload", upload::get_routes());
+        .mount("/upload", upload::get_routes())
+        .mount("/files", files::get_routes());
 
     api.launch().await.expect("API launch failed");
 
@@ -99,6 +100,8 @@ async fn main() -> Result<(), anyhow::Error> {
 #[derive(Serialize_repr, Debug, PartialEq)]
 #[repr(u32)]
 pub enum ApiResponseCode {
+    /// This specific code is used when someone is trying to hack the systems.
+    HackTry = 0001,
     Unauthorized = 1001,
     InternalError = 1002,
     NotFound = 1003,

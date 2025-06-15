@@ -51,6 +51,16 @@ pub async fn initiate_upload(
     mut pool: Connection<Db>,
     config: &State<AppConfig>,
 ) -> Result<Json<InitiateUploadResponse>, (Status, Json<ApiResponse>)> {
+
+    // Check the path
+    if !file::is_path_valid(&body.path, &auth_user.user) {
+        return Err((
+            Status::NotAcceptable,
+            create_error_response(ApiResponseCode::HackTry, "You really thought that you can hack the system? This path will not take you anywhere.")
+        ));
+    }
+
+
     let session_id = Uuid::new_v4().to_string();
     let file_id = Uuid::new_v4().to_string();
 
