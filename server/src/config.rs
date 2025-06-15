@@ -13,6 +13,7 @@ pub struct AppConfig {
 pub struct UploadConfig {
     /// The timeout, in hours
     pub upload_sessions_timeout: i64,
+    pub encryption_key: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

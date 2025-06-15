@@ -4,6 +4,7 @@ use rocket::log::private::{error, warn};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, MySqlConnection, Row};
 use std::fmt::Display;
+use std::path::PathBuf;
 use std::str::FromStr;
 use std::{fs, io};
 
@@ -100,10 +101,47 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
             .await
             .map_err(|e| anyhow::anyhow!(e))?;
 
+        Self::get_by_session_id(conn, &session_id).await
+    }
+
+    pub async fn get_by_session_id(conn: &mut MySqlConnection, session_id: &str) -> anyhow::Result<Self> {
         sqlx::query_as!(Self, "SELECT * FROM upload_sessions WHERE id = ?", session_id)
             .fetch_one(conn)
             .await
             .map_err(|e| anyhow::anyhow!(e))
+    }
+
+    pub async fn mark_as_failed(conn: &mut MySqlConnection, session_id: &str) -> anyhow::Result<()> {
+        sqlx::query!("UPDATE upload_sessions SET status = 'failed' WHERE id = ?", session_id)
+            .execute(conn)
+            .await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        Ok(())
+    }
+
+    pub async fn update_uploaded_bytes(conn: &mut MySqlConnection, session_id: &str, uploaded_bytes: i64, updated_at: NaiveDateTime) -> anyhow::Result<()> {
+        sqlx::query!(
+            "UPDATE upload_sessions SET uploaded_bytes = uploaded_bytes + ?, updated_at = ? WHERE id = ?",
+            uploaded_bytes, updated_at, session_id
+        )
+            .execute(conn)
+            .await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        Ok(())
+    }
+
+    pub async fn delete(conn: &mut MySqlConnection, config: &AppConfig, session_id: &str) -> anyhow::Result<()> {
+        let path = get_temp_file(&config.root, &session_id);
+        fs::remove_file(&path)?;
+
+        sqlx::query!("DELETE FROM upload_sessions WHERE id = ?", session_id)
+            .execute(conn)
+            .await
+            .map_err(|e| anyhow::anyhow!(e))?;
+
+        Ok(())
     }
 }
 
@@ -119,11 +157,8 @@ pub async fn clear_old_upload_data(conn: &mut MySqlConnection, config: AppConfig
         return Ok(());
     }
 
-    let temp_path = config.root.join("temp");
-
-
     old_upload.iter()
-        .map(|session_id| temp_path.clone().join(format!("hanfu_upload_{}.tmp", session_id)))
+        .map(|session_id| get_temp_file(&config.root, &session_id))
         .for_each(|temp_path| {
             if let Err(e) = fs::remove_file(&temp_path) {
                 match e.kind() {
@@ -140,4 +175,29 @@ pub async fn clear_old_upload_data(conn: &mut MySqlConnection, config: AppConfig
         });
 
     Ok(())
+}
+
+pub fn get_temp_file(root: &PathBuf, session_id: &str) -> PathBuf {
+    root.join("temp").join(format!("hanfu_upload_{}.tmp", session_id))
+}
+
+pub async fn fail_upload_session(session: &UploadSession, config: &AppConfig, conn: &mut MySqlConnection) {
+    if let Err(e) = UploadSession::mark_as_failed(conn, &session.id).await {
+        error!("Failed to mark upload session {} as failed in DB: {}", session.id, e);
+    }
+
+    let temp_file_path = get_temp_file(&config.root, &session.id);
+    if let Err(e) = tokio::fs::remove_file(&temp_file_path).await {
+        match e.kind() {
+            io::ErrorKind::NotFound => {
+                warn!("Temporary file for session {} not found at {}. It might have been deleted already.", session.id, temp_file_path.display());
+            },
+            io::ErrorKind::PermissionDenied => {
+                error!("Permission denied when trying to delete temporary file for session {} at {}: {}", session.id, temp_file_path.display(), e);
+            },
+            _ => {
+                error!("Failed to delete temporary file for session {} at {}: {}", session.id, temp_file_path.display(), e);
+            }
+        }
+    }
 }

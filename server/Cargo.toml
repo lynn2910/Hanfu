@@ -24,6 +24,7 @@ ctr = "0.9"
 hmac = "0.12"
 hex = "0.4"
 rand = "0.9"
+cipher = "0.4.4"
 
 chrono = { version = "0.4.38", features = ["serde"] }
 anyhow = "1.0.86"
@@ -38,3 +39,6 @@ argon2 = { version = "0.5.3", features = ["default", "password-hash", "rand", "s
 
 color-eyre = { version = "0.6.3", features = ["default", "capture-spantrace", "color-spantrace"] }
 uuid = { version = "1.10.0", features = ["fast-rng", "v4"] }
+pbkdf2 = "0.12.2"
+
+mime_guess = "2.0.5"

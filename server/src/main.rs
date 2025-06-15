@@ -3,6 +3,7 @@ mod errors;
 mod models;
 mod routers;
 mod scheduler;
+mod services;
 
 use crate::config::AppConfig;
 use crate::models::upload_sessions::clear_old_upload_data;
@@ -12,12 +13,15 @@ use crate::scheduler::create_jobs;
 use clap::Parser;
 use dotenv::dotenv;
 use rocket::fairing::AdHoc;
+use rocket::http::{ContentType, Status};
+use rocket::response::Responder;
 use rocket::serde::json::Json;
-use rocket::{catch, catchers, error, fairing, get, routes, Build, Request, Rocket};
+use rocket::{catch, catchers, error, fairing, get, routes, Build, Request, Response, Rocket};
 use rocket_db_pools::Database;
 use serde::Serialize;
 use serde_repr::Serialize_repr;
 use std::env;
+use std::io::Cursor;
 use std::path::PathBuf;
 
 #[derive(Database)]
@@ -98,10 +102,17 @@ pub enum ApiResponseCode {
     Unauthorized = 1001,
     InternalError = 1002,
     NotFound = 1003,
+    MissingHeader = 1004,
+    InvalidHeader = 1005,
 
     HubCannotSignup = 2001,
     UploadInvalidIVFormat = 3001,
     UploadInvalidIVLength = 3002,
+    UploadSessionExpired = 3003,
+    UploadFailed = 3004,
+    InvalidHMAC = 3005,
+    ChunkUploadOK = 3101,
+    UploadFinished = 3102,
 }
 
 fn create_error_response(code: ApiResponseCode, message: impl ToString) -> Json<ApiResponse> {
@@ -112,6 +123,22 @@ fn create_error_response(code: ApiResponseCode, message: impl ToString) -> Json<
 pub struct ApiResponse {
     code: ApiResponseCode,
     message: String,
+}
+
+impl<'r> Responder<'r, 'static> for ApiResponse {
+    fn respond_to(self, _: &'r Request) -> rocket::response::Result<'static> {
+        let json_string = serde_json::to_string(&self)
+            .map_err(|e| {
+                eprintln!("Error serializing ApiErrorResponse: {:?}", e);
+                Status::InternalServerError
+            })?;
+
+        Response::build()
+            .sized_body(json_string.len(), Cursor::new(json_string))
+            .header(ContentType::new("application", "json"))
+            .status(Status::BadRequest)
+            .ok()
+    }
 }
 
 #[catch(401)]
@@ -128,6 +155,7 @@ fn internal_error() -> Json<ApiResponse> {
 fn not_found(req: &Request) -> Json<ApiResponse> {
     create_error_response(ApiResponseCode::NotFound, format!("Not found: {}", req.uri()))
 }
+
 #[get("/")]
 fn hello() -> &'static str {
     "hello world!"
