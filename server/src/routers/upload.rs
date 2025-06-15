@@ -77,7 +77,7 @@ pub async fn initiate_upload(
     }
 
     // Create file in database
-    let _ = File::create(&mut **pool, file_id.clone(), body.path.clone(), auth_user.user.id.clone(), now_utc)
+    let _ = File::create(&mut **pool, file_id.clone(), body.path.clone(), auth_user.user.id.clone(), now_utc, body.iv.clone(), body.total_size)
         .await
         .map_err(|e| {
             error!("Failed to create file in database: {}", e);

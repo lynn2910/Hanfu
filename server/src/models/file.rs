@@ -18,15 +18,18 @@ pub struct File {
 
     pub upload_finished: bool,
     pub upload_finished_at: Option<NaiveDateTime>,
+
+    pub iv: String,
+    pub total_size: i64
 }
 
 impl File {
-    pub async fn create(conn: &mut MySqlConnection, file_id: String, path: String, user_id: String, now_utc: NaiveDateTime) -> anyhow::Result<Self> {
+    pub async fn create(conn: &mut MySqlConnection, file_id: String, path: String, user_id: String, now_utc: NaiveDateTime, iv: String, total_size: i64) -> anyhow::Result<Self> {
         sqlx::query_as!(
             Self,
             r#"
-INSERT INTO files (file_id, owner_id, creation_date, signature, path, upload_finished, upload_finished_at)
-VALUES (?, ?, ?, ?, ?, ? , ?);
+INSERT INTO files (file_id, owner_id, creation_date, signature, path, upload_finished, upload_finished_at, iv, total_size)
+VALUES (?, ?, ?, ?, ?, ? , ?, ?, ?);
 "#,
             file_id,
             user_id,
@@ -34,7 +37,9 @@ VALUES (?, ?, ?, ?, ?, ? , ?);
             "",
             path,
             false,
-            None as Option<NaiveDateTime>
+            None as Option<NaiveDateTime>,
+            iv,
+            total_size
         )
             .execute(&mut *conn)
             .await
@@ -47,7 +52,7 @@ VALUES (?, ?, ?, ?, ?, ? , ?);
         sqlx::query_as!(Self, r#"
 SELECT
     file_id, owner_id, creation_date,
-    signature, path,
+    signature, path, iv, total_size,
     upload_finished as "upload_finished!: _", upload_finished_at
 FROM files
 WHERE file_id = ?"#,
@@ -57,7 +62,19 @@ WHERE file_id = ?"#,
             .map_err(|e| anyhow::anyhow!(e))
     }
 
-    pub async fn get_from_path(conn: &mut MySqlConnection, path: &str, user_id: String) -> anyhow::Result<Self> {}
+    pub async fn get_from_path(conn: &mut MySqlConnection, path: &str, user_id: &str) -> anyhow::Result<Self> {
+        sqlx::query_as!(Self, r#"
+SELECT
+    file_id, owner_id, creation_date,
+    signature, path, iv, total_size,
+    upload_finished as "upload_finished!: _", upload_finished_at
+FROM files
+WHERE owner_id = ? AND path = ?"#,
+            user_id, path
+        ).fetch_one(conn)
+            .await
+            .map_err(|e| anyhow::anyhow!(e))
+    }
 
     pub async fn finish_upload(
         &self,
@@ -105,7 +122,7 @@ pub fn is_path_valid(path: &str, user: &User) -> bool {
             std::path::Component::ParentDir => {
                 warn!(
                     "Someone is testing the system with a path containing '..': {} {} ({}): {}",
-                    user.first_name, user.last_name,
+                    user.first_name, user.last_name.clone().unwrap_or_default(),
                     user.id,
                     user.email
                 );

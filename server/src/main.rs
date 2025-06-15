@@ -116,6 +116,8 @@ pub enum ApiResponseCode {
     InvalidHMAC = 3005,
     ChunkUploadOK = 3101,
     UploadFinished = 3102,
+
+    FileNotReady = 4001,
 }
 
 fn create_error_response(code: ApiResponseCode, message: impl ToString) -> Json<ApiResponse> {
